@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.mongo.springboot.sb_mongo.model.Student;
 import com.mongo.springboot.sb_mongo.repo.StudentRepository;
@@ -21,6 +21,9 @@ public class MyController {
 
 	@Autowired
 	private StudentRepository studentrepo;
+	
+    @Autowired
+	RestTemplate resttemplate;
 	
 	@PostMapping("/saveStudent")
 	ResponseEntity<?> addStudent(@RequestBody Student student)
@@ -41,6 +44,7 @@ public class MyController {
 		if(null==getStudents)
 		{
 			return ResponseEntity.ok("No Record Found");
+			//return (ResponseEntity<?>) ResponseEntity.noContent();
 		}
 		return ResponseEntity.ok(getStudents);
 	}
@@ -53,7 +57,16 @@ public class MyController {
 		if(null==getStudent)
 		{
 			return ResponseEntity.ok("Record Not Found");
+			
 		}
 		return ResponseEntity.ok(getStudent);
+	}
+	
+	@GetMapping("/testcompany")
+	public String getCompany()
+	{
+		String url="http://localhost:8095/company/checkinstance";
+		String response=resttemplate.getForObject(url, String.class);
+		return response;
 	}
 }
